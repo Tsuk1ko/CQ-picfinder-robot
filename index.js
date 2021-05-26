@@ -10,7 +10,9 @@ const Heapdump = require('node-oom-heapdump')({
 
 const createDump = () => {
   ensureDirSync('./test');
-  Heapdump.createHeapSnapshot(`./test/${Date.now()}.heapsnapshot`).catch(e => console.error('heapdump', e));
+  Heapdump.createHeapSnapshot(`./test/${Date.now()}.heapsnapshot`)
+    .then(path => console.log('heapdump', path))
+    .catch(e => console.error('heapdump', e));
 };
 
 setTimeout(createDump, 120 * 1000);
