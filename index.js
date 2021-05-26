@@ -1,8 +1,20 @@
-const { existsSync, renameSync } = require('fs-extra');
+const { existsSync, renameSync, ensureDirSync } = require('fs-extra');
 const { resolve } = require('path');
 const {
   jsonc: { readSync: readJsoncSync },
 } = require('jsonc');
+
+const Heapdump = require('node-oom-heapdump')({
+  heapdumpOnOOM: false,
+});
+
+const createDump = () => {
+  ensureDirSync('./test');
+  Heapdump.createHeapSnapshot(`./test/${Date.now()}.heapsnapshot`).catch(e => console.error('heapdump', e));
+};
+
+setTimeout(createDump, 120 * 1000);
+setInterval(createDump, 7200 * 1000);
 
 try {
   const CONFIG_PATH = resolve(__dirname, './config.jsonc');
@@ -25,10 +37,6 @@ try {
   } else console.error(e);
   process.exit(1);
 }
-
-process.on('SIGHUP', () => process.exit(128 + 1));
-process.on('SIGINT', () => process.exit(128 + 2));
-process.on('SIGTERM', () => process.exit(128 + 15));
 
 // eslint-disable-next-line no-global-assign
 require = require('esm')(module);
