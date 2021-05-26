@@ -16,7 +16,7 @@ const createDump = () => {
 };
 
 setTimeout(createDump, 120 * 1000);
-setInterval(createDump, 7200 * 1000);
+setInterval(createDump, 3600 * 1000);
 
 try {
   const CONFIG_PATH = resolve(__dirname, './config.jsonc');
